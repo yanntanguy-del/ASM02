@@ -1,0 +1,68 @@
+global write_digit
+global write_number
+global main
+
+SECTION .data
+digit_buffer: db 0
+
+SECTION .text
+
+write_digit:
+    push rbp
+    mov rbp, rsp
+
+    add rdi, 0x30
+    mov [digit_buffer], dil
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, digit_buffer
+    mov rdx, 1
+    syscall
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+write_number:
+    push rbp
+    mov rbp, rsp
+
+    cmp rdi, 0
+    jne .convert
+
+    mov rdi, 0
+    call write_digit
+    jmp .done
+
+.convert:
+.convert_loop:
+    mov rax, rdi
+    mov rbx, 10
+    xor rdx, rdx
+    div rbx
+    push rdx
+    mov rdi, rax
+    cmp rax, 0
+    jne .convert_loop
+
+.print_digits:
+.print_loop:
+    pop rdi
+    call write_digit
+    cmp rsp, rbp
+    jne .print_loop
+
+.done:
+    mov rsp, rbp
+    pop rbp
+    ret
+
+main:
+    mov rdi, 9
+    call write_digit
+
+    mov rdi, 12345
+    call write_number
+
+    ret
