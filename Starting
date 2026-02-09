@@ -1,0 +1,8 @@
+global write_digit
+global write_number
+global main
+
+SECTION .data
+digit_buffer: db 0
+
+SECTION .text
